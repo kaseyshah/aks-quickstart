@@ -2,8 +2,8 @@
 !cluster aks01
 az group create -n rsg-aks01 -l eastus
 az aks create -g rsg-aks01 -n aks01 --generate-ssh-keys --node-count 1
-az aks get-credentials -g rsg-aks01 -n aks01
 az aks list
+az aks get-credentials -g rsg-aks01 -n aks01
 kubectl get nodes
 kubectl apply -f https://raw.githubusercontent.com/kaseyshah/aks-quickstart/master/azure-vote.yaml
 kubectl get pods
