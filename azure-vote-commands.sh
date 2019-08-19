@@ -1,37 +1,45 @@
 !AKS In Action - Demo - AKS quickstart
-!cluster aks01
-az group create -n rsg-aks01 -l eastus
-az aks create -g rsg-aks01 -n aks01 --generate-ssh-keys --node-count 1
+!cluster aks06
+!create resource group
+az group create -n rsg-aks06 -l eastus
+!create AKS cluster
+az aks create -g rsg-aks06 -n aks06 --generate-ssh-keys --node-count 1
 az aks list
-az aks get-credentials -g rsg-aks01 -n aks01
+!set the context to this cluster
+az aks get-credentials -g rsg-aks06 -n aks06
+!see cluster info for the current context
+kubectl cluster-info
 kubectl get nodes
+!deploy app and service from the following yaml file on github
 kubectl apply -f https://raw.githubusercontent.com/kaseyshah/aks-quickstart/master/azure-vote.yaml
 kubectl get pods
+kubectl get deployments
+kubectl get rs
+!wait for service to receive public IP
 kubectl get service azure-vote-front --watch
-curl
-az aks browse --g rsg-aks01 -n aks01
-az aks scale -g rsg-aks01 -n aks01 --node-count 2
-kubectl get nodes
-kubectl scale --replicas=3 -f azure-vote.yaml 
+!wait 5 minutes before the curl and http commands below
+curl <public IP from above output>
+http://<public IP from above output>
+!send vote from multiple browser tabs
+! scale to 3 replicas
+kubectl scale --replicas=3 -f https://raw.githubusercontent.com/kaseyshah/aks-quickstart/master/azure-vote.yaml
+kubectl get deployments
 kubectl get pods
+!apply autoscaling
 kubectl autoscale deployment azure-vote-front --min=2 --max=10 
 kubectl get pods
-!
-!cluster aks02
-az group create -n rsg-aks02 -l eastus
-az aks create -g rsg-aks01 -n aks02 --generate-ssh-keys --node-count 1
-az aks get-credentials -g rsg-aks02 -n aks02
-az aks list
+! scale azure-vote-front replicas to 4 and see autoscaling bringing it below 4
+kubectl scale deployment azure-vote-front --replicas=4
+kubectl get pods
+!see autoscaler
+kubectl get hpa
+!delete hpa
+kubectl delete hpa azure-vote-front
+!apply new autoscaler with CPU percent 75
+kubectl autoscale deployment azure-vote-front --min=2 --max=10 --cpu-percent=75
+kubectl get pods
+! scale aks cluster to 2 nodes
+az aks scale -g rsg-aks06 -n aks06 --node-count 2
 kubectl get nodes
-kubectl apply -f https://raw.githubusercontent.com/kaseyshah/aks-quickstart/master/azure-vote.yaml
-kubectl get pods
-kubectl get service azure-vote-front --watch
-curl
-az aks browse --g rsg-aks02 -n aks02
-az aks scale -g rsg-aks02 -n aks02 --node-count 2
-kubectl get nodes
-kubectl scale --replicas=3 -f azure-vote.yaml 
-kubectl get pods
-kubectl autoscale deployment azure-vote-front --min=2 --max=10 
-kubectl get pods
-!
+!browse kubernetes dashboard url 
+az aks browse -g rsg-aks06 -n aks06
