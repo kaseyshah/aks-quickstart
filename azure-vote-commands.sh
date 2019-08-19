@@ -1,26 +1,26 @@
-!AKS In Action - Demo - AKS quickstart
-!cluster aks06
-!create resource group
-az group create -n rsg-aks06 -l eastus
-!create AKS cluster
-az aks create -g rsg-aks06 -n aks06 --generate-ssh-keys --node-count 1
+! AKS In Action - Demo - AKS quickstart
+! cluster aks07
+! create resource group
+az group create -n rsg-aks07 -l eastus
+! create AKS cluster
+az aks create -g rsg-aks07 -n aks07 --generate-ssh-keys --node-count 1
 az aks list
-!set the context to this cluster
-az aks get-credentials -g rsg-aks06 -n aks06
-!see cluster info for the current context
+! set the context to this cluster
+az aks get-credentials -g rsg-aks07 -n aks07
+! see cluster info for the current context
 kubectl cluster-info
 kubectl get nodes
-!deploy app and service from the following yaml file on github
+! deploy app and service from the following yaml file on github
 kubectl apply -f https://raw.githubusercontent.com/kaseyshah/aks-quickstart/master/azure-vote.yaml
 kubectl get pods
 kubectl get deployments
 kubectl get rs
-!wait for service to receive public IP
+! wait for service to receive public IP
 kubectl get service azure-vote-front --watch
-!wait 5 minutes before the curl and http commands below
+! wait 5 minutes before the curl and http commands below
 curl <public IP from above output>
 http://<public IP from above output>
-!send vote from multiple browser tabs
+! send vote from multiple browser tabs
 ! scale to 3 replicas
 kubectl scale --replicas=3 -f https://raw.githubusercontent.com/kaseyshah/aks-quickstart/master/azure-vote.yaml
 kubectl get deployments
@@ -31,15 +31,15 @@ kubectl get pods
 ! scale azure-vote-front replicas to 4 and see autoscaling bringing it below 4
 kubectl scale deployment azure-vote-front --replicas=4
 kubectl get pods
-!see autoscaler
+! see autoscaler
 kubectl get hpa
-!delete hpa
+! delete hpa
 kubectl delete hpa azure-vote-front
-!apply new autoscaler with CPU percent 75
+! apply new autoscaler with CPU percent 75
 kubectl autoscale deployment azure-vote-front --min=2 --max=10 --cpu-percent=75
 kubectl get pods
 ! scale aks cluster to 2 nodes
-az aks scale -g rsg-aks06 -n aks06 --node-count 2
+az aks scale -g rsg-aks07 -n aks07 --node-count 2
 kubectl get nodes
-!browse kubernetes dashboard url 
-az aks browse -g rsg-aks06 -n aks06
+! browse kubernetes dashboard url 
+az aks browse -g rsg-aks07 -n aks07
