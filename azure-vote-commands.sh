@@ -6,7 +6,7 @@ az group create -n rsg-aks08 -l eastus
 az aks create -g rsg-aks08 -n aks08 --generate-ssh-keys --node-count 1
 az aks list
 # set the context to this cluster
-az aks get-credentials -g rsg-aks08 -n aks08 --overwite-existing
+az aks get-credentials -g rsg-aks08 -n aks08 --overwrite-existing
 # see cluster info for the current context
 kubectl cluster-info
 kubectl get nodes
